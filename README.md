@@ -1,0 +1,1 @@
+Este es el primer proyecto de computo pararalelo de Sebastian Yamil Castellaños Gómez 198090 y Galilea Resendis González 196811. El proyecto se basa en hacer un algoritmo DBSCAN de manera serial y paralelizada, como parte de las especificaciones se debe de alcanzar un speed up de 1.5 con la versión paralelizada 
