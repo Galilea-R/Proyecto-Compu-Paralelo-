@@ -131,10 +131,10 @@ int main() {
     save_to_csv(output_file, points, size);  // Guardar los resultados
 
     auto end = high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
+    auto duration = duration_cast<milliseconds>(end - start);
 
-    // Mostrar el tiempo de ejecución
-    std::cout << "Tiempo de ejecución (Paralelo): " << duration.count() << " segundos\n";
+    // Mostrar el tiempo de ejecución en milisegundos
+    std::cout << "Tiempo de ejecución (Paralelo): " << duration.count() << " milisegundos\n";
 
     // Liberar memoria
     for (long long int i = 0; i < size; i++) {
