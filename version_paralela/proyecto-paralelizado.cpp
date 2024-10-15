@@ -122,19 +122,26 @@ int main() {
         points[i] = new float[3];  // Dos coordenadas (x, y) y una columna para el cluster ID
     }
 
-    auto start = high_resolution_clock::now();
+    for (int iter = 1; iter <= 10; iter++) {
+        cout << "Iteración " << iter << ":\n";
 
-    load_CSV(input_file, points, size);  // Cargar los puntos desde el CSV
+        // Cargar los puntos desde el CSV
+        load_CSV(input_file, points, size);
 
-    dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
+        // Medir el tiempo de ejecución
+        auto start = high_resolution_clock::now();
 
-    save_to_csv(output_file, points, size);  // Guardar los resultados
+        dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
 
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start);
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(end - start);
 
-    // Mostrar el tiempo de ejecución en milisegundos
-    std::cout << "Tiempo de ejecución (Paralelo): " << duration.count() << " milisegundos\n";
+        // Guardar los resultados
+        save_to_csv(output_file, points, size);
+
+        // Mostrar el tiempo de ejecución en milisegundos
+        std::cout << "Tiempo de ejecución (Paralelo): " << duration.count() << " milisegundos\n";
+    }
 
     // Liberar memoria
     for (long long int i = 0; i < size; i++) {
