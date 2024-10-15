@@ -5,8 +5,10 @@
 #include <cmath>
 #include <vector>
 #include <sstream>  // Para usar stringstream y dividir por comas
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 // Carga el archivo CSV con los puntos
 void load_CSV(string file_name, float** points, long long int size) {
@@ -102,7 +104,7 @@ int main() {
 
     // Construcción dinámica de los nombres de los archivos
     string input_file = to_string(size) + "_data.csv";     // Ejemplo: "1000_data.csv"
-    string output_file = to_string(size) + "_results.csv"; // Ejemplo: "1000_results.csv"
+    string output_file = to_string(size) + "_resultsP1.csv"; // Ejemplo: "1000_results.csv"
 
     // Inicialización de la matriz para almacenar los puntos
     float** points = new float*[size];
@@ -110,11 +112,26 @@ int main() {
         points[i] = new float[3];  // Dos coordenadas (x, y) y una columna para el cluster ID
     }
 
-    load_CSV(input_file, points, size);  // Cargar los puntos desde el CSV
+    for (int iter = 1; iter <= 10; iter++) {
+        cout << "Iteración " << iter << ":\n";
 
-    dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
+        // Cargar los puntos desde el CSV
+        load_CSV(input_file, points, size);
 
-    save_to_csv(output_file, points, size);  // Guardar los resultados
+        // Medir el tiempo de ejecución
+        auto start = high_resolution_clock::now();
+
+        dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(end - start);
+
+        // Guardar los resultados
+        save_to_csv(output_file, points, size);
+
+        // Mostrar el tiempo de ejecución en milisegundos
+        std::cout << "Tiempo de ejecución " << duration.count() << " milisegundos\n";
+    }
 
     // Liberar memoria
     for (long long int i = 0; i < size; i++) {
