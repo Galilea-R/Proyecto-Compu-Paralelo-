@@ -7,7 +7,8 @@ Para la versión serial tenemos como funciones principales a:
 
 Para la verisón paralalelizada tenemos las mismas funciones que en la serial, solo que en cada función le decidimos agregar una parte paralelizada. Lo hicimos considerando que acciones se podrían maximizar sin que ocurrieran errores o tardara más tiempo que el serial.
 Usamos: 
-1) #pragma omp atomic: lo usamos para incrementar el contador cluster_id de forma segura. Esto asegura que cada clúster reciba un identificador único, incluso cuando múltiples hilos intenten actualizarlo simultáneamente asegurando evitar una condición de carrera. 
+
+1)#pragma omp atomic: lo usamos para incrementar el contador cluster_id de forma segura. Esto asegura que cada clúster reciba un identificador único, incluso cuando múltiples hilos intenten actualizarlo simultáneamente asegurando evitar una condición de carrera. 
 
 2)#pragma omp critical: lo usamos para proteger el acceso a la estructura de datos neighbors. Esto previene que múltiples hilos modifiquen la lista de vecinos de un punto al mismo tiempo, garantizando la integridad de los datos compartidos.
 
