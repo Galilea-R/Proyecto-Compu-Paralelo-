@@ -1,5 +1,7 @@
 Este es el primer proyecto de computo pararalelo y en la nube de Sebastian Yamil Castellanos Gómez 198090 y Galilea Resendis González 196811. El proyecto se basa en hacer un algoritmo DBSCAN de manera serial y paralelizada, como parte de las especificaciones se debe de alcanzar un speed up minimo de 1.5 con la versión paralelizada. 
 
+El proyecto lo corrimos en una computadora asus zenbook pro duo con un procesador de 12ª generación intel core i9, con 32 de RAM y 20 nucleos. 
+
 Para la versión serial tenemos como funciones principales a: 
 1) region_query: Esta función busca todos los vecinos de un punto específico (point_idx) que están dentro de una distancia (epsilon). Encontrar los vecinos de un punto es fundamental para algoritmo DBSCAN, ya que así va a poder formar clústeres basados en la densidad de puntos cercanos.
 2) expand_cluster: Esta función expande un clúster agregando puntos que tienen suficientes vecinos dentro del radio epsilon.
