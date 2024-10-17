@@ -56,7 +56,7 @@ vector<int> region_query(float** points, long long int point_idx, float epsilon,
     #pragma omp parallel
     {
         vector<int> private_neighbors;
-        #pragma omp for nowait schedule(dynamic, 5)
+        #pragma omp for nowait schedule(dynamic, size >= 200000 ? 180 : size >= 180000 ? 160 : size >= 160000 ? 140 : size >= 140000 ? 120 : size >= 120000 ? 100 : size >= 80000 ? 75 : size >= 40000 ? 60 : 45)
         for (long long int i = 0; i < size; i++) {
             float distance = sqrt(pow(points[point_idx][0] - points[i][0], 2) + pow(points[point_idx][1] - points[i][1], 2));
             if (distance <= epsilon) {
@@ -106,48 +106,47 @@ void dbscan(float** points, float epsilon, int min_samples, long long int size) 
 }
 
 int main() {
-    // Ajusta el numero de threads para que coincida con todos los hilos logicos posibles del equipo
-    omp_set_num_threads(omp_get_max_threads());
-    long long int size = 20000;  // Cambia esta variable al tamaño de los datos que estés usando
+    vector<long long int> sizes = {160000, 180000};
+    vector<int> num_threads = {1, omp_get_max_threads() / 2, omp_get_max_threads(), omp_get_max_threads() * 2};
     float epsilon = 0.03;
     int min_samples = 10;
 
-    // Construcción dinámica de los nombres de los archivos
-    string input_file = to_string(size) + "_data.csv";     // Ejemplo: "1000_data.csv"
-    string output_file = to_string(size) + "_resultsP2.csv"; // Ejemplo: "1000_results.csv"
+    for (auto size : sizes) {
+        string input_file = to_string(size) + "_data.csv";
+        string output_file = to_string(size) + "_results.csv";
 
-    // Inicialización de la matriz para almacenar los puntos
-    float** points = new float*[size];
-    for (long long int i = 0; i < size; i++) {
-        points[i] = new float[3];  // Dos coordenadas (x, y) y una columna para el cluster ID
+        for (auto threads : num_threads) {
+            omp_set_num_threads(threads);
+
+            for (int run = 0; run < 3; run++) {
+                // Inicialización de la matriz para almacenar los puntos
+                float** points = new float*[size];
+                for (long long int i = 0; i < size; i++) {
+                    points[i] = new float[3];  // Dos coordenadas (x, y) y una columna para el cluster ID
+                }
+
+                auto start = high_resolution_clock::now();
+
+                load_CSV(input_file, points, size);  // Cargar los puntos desde el CSV
+
+                dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
+
+                save_to_csv(output_file, points, size);  // Guardar los resultados
+
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+
+                // Mostrar el tiempo de ejecución de cada iteración
+                std::cout << "Iteración " << (run + 1) << " - Tiempo de ejecución: " << duration.count() << " milisegundos, Número de threads: " << threads << ", Número de puntos: " << size << "\n";
+
+                // Liberar memoria
+                for (long long int i = 0; i < size; i++) {
+                    delete[] points[i];
+                }
+                delete[] points;
+            }
+        }
     }
-
-    for (int iter = 1; iter <= 10; iter++) {
-        cout << "Iteración " << iter << ":\n";
-
-        // Cargar los puntos desde el CSV
-        load_CSV(input_file, points, size);
-
-        // Medir el tiempo de ejecución
-        auto start = high_resolution_clock::now();
-
-        dbscan(points, epsilon, min_samples, size);  // Ejecutar DBSCAN
-
-        auto end = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(end - start);
-
-        // Guardar los resultados
-        save_to_csv(output_file, points, size);
-
-        // Mostrar el tiempo de ejecución en milisegundos
-        std::cout << "Tiempo de ejecución (Paralelo): " << duration.count() << " milisegundos\n";
-    }
-
-    // Liberar memoria
-    for (long long int i = 0; i < size; i++) {
-        delete[] points[i];
-    }
-    delete[] points;
 
     return 0;
 }
