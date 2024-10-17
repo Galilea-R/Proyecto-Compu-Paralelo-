@@ -18,7 +18,7 @@ Usamos:
 
 Las pruebas realizadas las hicimos con 20000,40000,80000,120000,140000,160000,180000,200000 datos generados de DBSCAN_noise.ipynb. En el código serial lo corrimos 10 veces por cada dato(ej 10 veces 20000) y después sacamos el promedio del tiempo de ejecución y lo guardamos en el archivo llamado promedio.csv en la carpeta de version_serial. Para el paralelo tambíen lo corrimos 10 veces por cada dato, pero con 1,10,20 y 40 hilos cada uno 10 veces(ej con 1 hilo 20000 datos 10 veces) y después sacamos el promedio del tiempo de ejecución. Los resultados fueron guardados en un archivo csv por cada número de hilos en la carpeta de version_paralelo. 
 
-Para medir el speed up de nuestra implementación paralela, en la carpeta de version_paralelo tendremos una gráfica mostrando el tiempo de ejecución del codigo serial comparandolo con el tiempo de ejecución en paralelo y otra gráfica midiendo los speed ups alcanzados por cada diferente número de hilos. 
+En la carpeta Resultados tendremos una gráfica mostrando el tiempo de ejecución del codigo serial comparándolo con el tiempo de ejecución en paralelo y otra gráfica midiendo los speed ups alcanzados por cada número de hilos diferentes que probamos. 
 
 En conclusión 
 
